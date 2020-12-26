@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <script src="https://google.github.io/traceur-compiler/bin/traceur.js"></script>
+    <link href="styles.css" rel="stylesheet" type="text/css">    
+    <link href="lib/range-slider.min.css" rel="stylesheet" type="text/css">    
+    <script src="lib/system.min.js"></script>
+    <script src="lib/iro.min.js"></script>
+    <script src="lib/range-slider.min.js"></script>
+  </head>
+
+  <body>
+    <h1>Snowflake generator V0.1</h1>
+    <span>
+      <button class="button" id="randomize">Randomize</button>
+      <button class="button" id="animate">Refresh</button>
+      <button class="button" id="cancel">Cancel</button>
+      <button class="button" id="new_snowflake">New Snowflake</button>
+    </span>
+    <div id="snowflake_container"></div>
+
+    <span class="param_container">
+      <span class="param_block">
+        <span class="param_value">
+          <span class="label">Background freeze level</span>
+          <input type="text" id="bg_freeze_level">
+        </span>
+        <input type="range" id="bg_freeze_level_range">
+      </span>  
+
+      <span class="param_block">
+        <span class="param_value">
+          <span class="label">Freeze speed</span>
+          <input type="text" id="fg_freeze_speeed"><br>
+        </span>
+        <input type="range" id="fg_freeze_speeed_range">
+      </span>  
+
+      <span class="param_block">
+        <span class="param_value">
+          <span class="label">Diffusion speed</span>
+          <input type="text" id="diffusion_speed"><br>
+        </span>
+        <input type="range" id="diffusion_speed_range">
+      </span>  
+
+      <span class="param_block">
+        <span class="param_value">
+          <span class="label">Diffusion asymmetry</span>
+          <input type="text" id="diffusion_asymmetry"><br>
+        </span>
+        <input type="range" id="diffusion_asymmetry_range">
+      </span>  
+
+
+      <span class="param_block">
+        <span class="param_value">
+          <span class="label">Random background noise</span>
+          <input type="text" id="rnd_bg_noise"><br>
+        </span>
+        <input type="range" id="rnd_bg_noise_range">
+      </span>  
+
+      <span class="param_block">
+        <span class="param_value">
+          <span class="label">Random seed</span>
+          <input type="text" id="rnd_seed"><br>
+        </span>
+        <input type="range" id="rnd_seed_range">
+      </span>  
+    </span>
+
+    <span class="param_container">
+      <span class="param_block">
+        <span class="param_value">  
+          <span class="label">Foreground color</span>
+          <span class="color_item" id="fgColor"></span>
+        </span>  
+      </span>  
+
+      <span class="param_block">
+        <span class="param_value">  
+          <span class="label">Background color</span>
+          <span class="color_item" id="bgColor"></span>
+        </span>  
+      </span>  
+    </span>
+
+    <script>
+      System.import('main.js');
+    </script>
+  </body>
+
+  <footer>ES6 Snowflake generator - Copyright 2020 by Andreas Maschke. Implements the algorithm described in the paper <a href="http://patarnott.com/pdf/SnowCrystalGrowth.pdf" target="_blank">"A local cellular model for snow crystal growth"</a> by Clifford A. Reiter.
+  </footer>
+
+</html>
