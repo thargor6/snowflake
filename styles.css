@@ -61,6 +61,16 @@ footer, a {
   padding: 1em;
 }
 
+textarea {
+  font-size: 1.1em;
+  background-color: #159C81;
+  color: #FFFFFF;
+  border: solid;
+  border-radius: 5em;
+  padding:0.3em 1em;
+  margin: 0.5em;
+}
+
 .button {
   font-size: 1.1em;
   background-color: #159C81;

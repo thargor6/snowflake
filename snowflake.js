@@ -1,7 +1,9 @@
 import * as mt from 'lib/mersenne-twister.js';
+import * as util from 'utils.js';
 
 export class Snowflake {
   constructor() {
+    this.version = 0.3;
     this.snowFlakeWidth = 128;
     this.bgFreezeLevel = 0.5;
     this.fgFreezeSpeed = 0.0005;
@@ -10,6 +12,11 @@ export class Snowflake {
     this.rndBgNoise = 0.25;
     this.rndSeed = 12345;
     this.transparentBackground = true;
+    this.fgColor = '#D7EBFF';
+    this.bgColor = '#343F4D';
+    this.threshold = 0.65;
+    this.animateSteps = 50;
+    this.iterationsPerStep = 25;
   }
 
   randomizeValues() {
@@ -120,45 +127,33 @@ export const iterate = (snowflake, neighbours, nonReceptivePart, receptivePart, 
   }
 }
 
-let BG_COLOR_R = 52;
-let BG_COLOR_G = 63;
-let BG_COLOR_B = 77;
+let bgColorR = 52, bgColorG = 63, bgColorB = 77;
+let fgColorR = 215, fgColorG = 235, fgColorB = 255;
 
-
-let SNOWFLAKE_COLOR_R = 215;
-let SNOWFLAKE_COLOR_G = 235;
-let SNOWFLAKE_COLOR_B = 255;
-
-const THRESHOLD = 0.65;
-
-export const setFgColor = (r, g, b) => {
-  SNOWFLAKE_COLOR_R = r;
-  SNOWFLAKE_COLOR_G = g;
-  SNOWFLAKE_COLOR_B = b;
+export const setFgColor = (hexValue) => {
+  [fgColorR, fgColorG, fgColorB] = util.hex2rgb(hexValue);
 }
 
-export const setBgColor = (r, g, b) => {
-  BG_COLOR_R = r;
-  BG_COLOR_G = g;
-  BG_COLOR_B = b;
+export const setBgColor = (hexValue) => {
+  [bgColorR, bgColorG, bgColorB] = util.hex2rgb(hexValue);
 }
 
-const renderVal = (imageData, val, x, y, transparentBackground) => {
+const renderVal = (imageData, val, x, y, transparentBackground, threshold) => {
   let r, g, b, a;
-  if(val>THRESHOLD) {
-    const rawIntensity = Math.min(1.0, Math.log((val - THRESHOLD + 1.0) * 2.0));
+  if(val>threshold) {
+    const rawIntensity = Math.min(1.0, Math.log((val - threshold + 1.0) * 2.0));
     const intensity = rawIntensity * rawIntensity * rawIntensity;
     const invIntensity = 1.0 - intensity;
 
-    r = intensity * SNOWFLAKE_COLOR_R + invIntensity * BG_COLOR_R | 0;
-    g = intensity * SNOWFLAKE_COLOR_G + invIntensity * BG_COLOR_G | 0;
-    b = intensity * SNOWFLAKE_COLOR_B + invIntensity * BG_COLOR_B | 0;
+    r = intensity * fgColorR + invIntensity * bgColorR | 0;
+    g = intensity * fgColorG + invIntensity * bgColorG | 0;
+    b = intensity * fgColorB + invIntensity * bgColorB | 0;
     a = transparentBackground ? (intensity * 256 | 0) : 255;
   }
   else {
-    r = BG_COLOR_R;
-    g = BG_COLOR_G;
-    b = BG_COLOR_B;
+    r = bgColorR;
+    g = bgColorG;
+    b = bgColorB;
     a = transparentBackground ? 0 : 255;
   }
 
@@ -174,17 +169,17 @@ const setVal = (imgfilterBuffer, val, x, y, width) => {
   imgfilterBuffer.buffer[idx] = val;
 }
 
-const drawFilteredImage = (imgfilterBuffer, imageData, canvasWidth, canvasHeight, transparentBackground) => {
+const drawFilteredImage = (imgfilterBuffer, imageData, canvasWidth, canvasHeight, transparentBackground, threshold) => {
   const buffer =  imgfilterBuffer.buffer;
   for(let y = 0; y < canvasHeight; y++) {
     for(let x = 0; x < canvasWidth; x++) {   
       const idx = (x + y * canvasWidth);
-      renderVal(imageData, buffer[idx], x, y, transparentBackground);
+      renderVal(imageData, buffer[idx], x, y, transparentBackground, threshold);
     }
   }  
 }
 
-export const renderSnowflake = (canvas, snowflake, snowFlakeWidth, snowFlakeHeight, cellCount, imgfilterBuffer, transparentBackground) => {
+export const renderSnowflake = (canvas, snowflake, snowFlakeWidth, snowFlakeHeight, cellCount, imgfilterBuffer, transparentBackground, threshold) => {
 
   let stretchFactor = 1.5 / 1.7321;
 
@@ -225,7 +220,7 @@ export const renderSnowflake = (canvas, snowflake, snowFlakeWidth, snowFlakeHeig
       setVal(imgfilterBuffer, (snowflake[idx1] + snowflake[idx2]) * 0.5, x, i, canvasWidth);
     }
   }
-  drawFilteredImage(imgfilterBuffer, imageData, canvasWidth, canvasHeight, transparentBackground);
+  drawFilteredImage(imgfilterBuffer, imageData, canvasWidth, canvasHeight, transparentBackground, threshold);
 
   ctx.putImageData(imageData, 0, 0);
 }

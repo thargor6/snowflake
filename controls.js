@@ -5,6 +5,7 @@ export const animateButton = document.querySelector("#animate");
 export const cancelButton = document.querySelector("#cancel");
 export const newSnowflakeButton = document.querySelector("#new_snowflake");
 export const randomizeButton = document.querySelector("#randomize");
+export const importSnowflakeParamsButton  = document.querySelector("#import_snowflake_params");
 
 export let snowflakeCanvas = document.querySelector("#canvas");
 
@@ -18,10 +19,7 @@ export const rndSeedText = document.querySelector("#rnd_seed");
 export const snowflakeContainer = document.querySelector("#snowflake_container");
 export const snowflakeContainerRefElement = document.querySelector("#snowflake_container_ref");
 
-// TODO remove
-export const getIterCount = () => {
-  return 500; //parseInt(iterCountText.value);
-}
+export const snowflakeParamTextArea = document.querySelector("#snowflake_params");
 
 const COLOR_PICKER_WIDTH = 240;
 const COLOR_PICKER_HANDLE_RADIUS = 10;
@@ -111,7 +109,9 @@ export const initSlider = (slider, onSlide, onSlideEnd, minValue, maxValue, valu
 }
 
 export const updateModel = (model) => {
-  model.snowFlakeWidth = 128;
+  if(model.snowFlakeWidth > 1024) {
+    model.snowFlakeWidth = 1024;
+  }
   model.bgFreezeLevel = parseFloat(bgFreezeLevelText.value);
   model.fgFreezeSpeed = parseFloat(fgFreezeSpeedText.value);
   model.diffusionSpeed = parseFloat(diffusionSpeedText.value);
@@ -119,6 +119,9 @@ export const updateModel = (model) => {
   model.diffusionAsymmetry = parseFloat(diffusionAsymmetryText.value);
   model.rndBgNoise = parseFloat(rndBgNoiseText.value);
   model.rndSeed = parseInt(rndSeedText.value);
+
+  model.fgColor =fgColorPicker.color.hexString;
+  model.bgColor = bgColorPicker.color.hexString; 
 }
 
 export const updateControls = (model) => {
@@ -152,5 +155,17 @@ export const updateControls = (model) => {
   if(rndSeedSlider.rangeSlider) {
     rndSeedSlider.rangeSlider.update({value : model.rndSeed}, false);
   }
+
+  fgColorPicker.color.hexString = model.fgColor;
+  bgColorPicker.color.hexString = model.bgColor;
 }
 
+export const updateSnowflakeParamStr = (model) => {
+  if(model) {
+    snowflakeParamTextArea.value = JSON.stringify(model);
+  }
+  else {
+    snowflakeParamTextArea.value = '';
+  }  
+}
+ 

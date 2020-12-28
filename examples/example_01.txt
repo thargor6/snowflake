@@ -1,0 +1,1 @@
+{"version":0.3,"snowFlakeWidth":320,"bgFreezeLevel":0.4777114070020616,"fgFreezeSpeed":1.6515994391627609,"diffusionSpeed":0.23990730312652886,"diffusionAsymmetry":0.7486161377746612,"rndBgNoise":0.07986288296524435,"rndSeed":968219,"transparentBackground":true,"fgColor":"#d7ebff","bgColor":"#343f4d","threshold":0.87,"animateSteps":50,"iterationsPerStep":36}

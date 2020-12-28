@@ -25,6 +25,8 @@ export const initializeSnowFlake = () => {
   nonReceptiveTmpBuffer = Array(CELL_COUNT);
   receptivePart = Array(CELL_COUNT);
   sf.initializeStartingPoint(snowflake, CELL_COUNT);
+  sf.setFgColor(model.fgColor);
+  sf.setBgColor(model.bgColor);
 }
 
 let forceAbort = false;
@@ -42,14 +44,14 @@ const nextAnimStep = (snowflake, neighbours, nonReceptivePart, receptivePart, no
 
 let currAnimStep;
 
-const animate = (iterationsPerStep, fgFreezeSpeed, diffusionSpeed, diffusionAsymmetry, animateSteps, transparentBackground) => {
+const animate = (iterationsPerStep, fgFreezeSpeed, diffusionSpeed, diffusionAsymmetry, animateSteps, transparentBackground, threshold) => {
   nextAnimStep(snowflake, neighbours, nonReceptivePart, receptivePart, nonReceptiveTmpBuffer, fgFreezeSpeed, diffusionSpeed, diffusionAsymmetry, iterationsPerStep).then( () => {
     setTimeout( () => {
-    sf.renderSnowflake(ctrl.snowflakeCanvas, snowflake, SNOWFLAKE_WIDTH, SNOWFLAKE_HEIGHT, CELL_COUNT, imgfilterBuffer, transparentBackground);
+    sf.renderSnowflake(ctrl.snowflakeCanvas, snowflake, SNOWFLAKE_WIDTH, SNOWFLAKE_HEIGHT, CELL_COUNT, imgfilterBuffer, transparentBackground, threshold);
     });
     currAnimStep++;
     if(currAnimStep < animateSteps && !forceAbort) {
-      animate(iterationsPerStep, fgFreezeSpeed, diffusionSpeed, diffusionAsymmetry, animateSteps, transparentBackground); 
+      animate(iterationsPerStep, fgFreezeSpeed, diffusionSpeed, diffusionAsymmetry, animateSteps, transparentBackground, threshold); 
     }
   });
 }
@@ -66,27 +68,13 @@ export const animateAsyncHandler = () => {
   setTimeout( () => {
     forceAbort = false;
     initializeSnowFlake();
-    const animateSteps = 50;
-    const iterationsPerStep = 25;
     currAnimStep = 0;
-    animate(iterationsPerStep, model.fgFreezeSpeed, model.diffusionSpeed, model.diffusionAsymmetry, animateSteps, model.transparentBackground);
+    animate(model.iterationsPerStep, model.fgFreezeSpeed, model.diffusionSpeed, model.diffusionAsymmetry, model.animateSteps, model.transparentBackground, model.threshold);
   }, delay);
 }
 
 export const cancelHandler = () => {
   forceAbort = true;
-}
-
-export const changeFgColor = (r, g, b) => {
-  cancelHandler();
-  sf.setFgColor(r, g, b);
-  animateAsyncHandler();
-}
-
-export const changeBgColor = (r, g, b) => {
-  cancelHandler();
-  sf.setBgColor(r, g, b);
-  animateAsyncHandler();
 }
 
 export const rerenderSnowflake = () => {
@@ -106,6 +94,22 @@ export const newSnowFlake = () => {
   ctrl.setCurrCanvas(canvas);
   forceAbort = false;  
   animateAsyncHandler();
+}
+
+export const setModel = (newModel) => {
+  model.snowFlakeWidth = newModel.snowFlakeWidth;
+  model.bgFreezeLevel = newModel.bgFreezeLevel;
+  model.fgFreezeSpeed = newModel.fgFreezeSpeed;
+  model.diffusionSpeed = newModel.diffusionSpeed;
+  model.diffusionAsymmetry = newModel.diffusionAsymmetry;
+  model.rndBgNoise = newModel.rndBgNoise;
+  model.rndSeed = newModel.rndSeed;
+  model.transparentBackground = newModel.transparentBackground;
+  model.fgColor = newModel.fgColor;
+  model.bgColor = newModel.bgColor;
+  model.threshold = newModel.threshold;
+  model.animateSteps = newModel.animateSteps;
+  model.iterationsPerStep = newModel.iterationsPerStep;
 }
 
 export const randomizeSnowFlake = () => {

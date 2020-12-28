@@ -11,14 +11,15 @@
   </head>
 
   <body>
-    <h1>Snowflake generator V0.1</h1>
+    <h1>Snowflake generator V0.3</h1>
+    <div id="snowflake_container"></div>
+
     <span>
       <button class="button" id="randomize">Randomize</button>
       <button class="button" id="animate">Refresh</button>
       <button class="button" id="cancel">Cancel</button>
       <button class="button" id="new_snowflake">New Snowflake</button>
     </span>
-    <div id="snowflake_container"></div>
 
     <span class="param_container">
       <span class="param_block">
@@ -84,6 +85,14 @@
           <span class="label">Background color</span>
           <span class="color_item" id="bgColor"></span>
         </span>  
+      </span>  
+
+      <span class="param_block">
+        <span class="param_value">  
+          <span class="label">Params</span>
+          <textarea id="snowflake_params" rows="6" cols="24"></textarea>  
+        </span>  
+        <button class="button" id="import_snowflake_params">Import</button>
       </span>  
     </span>
 

@@ -1,22 +1,45 @@
 import * as ctrl from 'controls.js';
 import * as render from 'render.js';
 
+const refreshSnowflake = () => {
+  ctrl.updateSnowflakeParamStr(render.model);
+  render.rerenderSnowflake(); 
+}
+
+const newSnowFlake = () => {
+  render.newSnowFlake();  
+  ctrl.updateSnowflakeParamStr(render.model);
+}
+
+const randomizeSnowFlake = () => {
+  render.randomizeSnowFlake();
+  ctrl.updateSnowflakeParamStr(render.model);
+}
+
+const importSnowflakeParams = () => {
+  const json = ctrl.snowflakeParamTextArea.value;
+  const model = JSON.parse(json);
+  render.setModel(model);
+  ctrl.updateControls(render.model);
+  render.rerenderSnowflake(); 
+  ctrl.updateSnowflakeParamStr(render.model);
+}
+
 ctrl.animateButton.addEventListener('click', render.animateAsyncHandler);
 ctrl.cancelButton.addEventListener('click', render.cancelHandler);
-ctrl.newSnowflakeButton.addEventListener('click', render.newSnowFlake);
-ctrl.randomizeButton.addEventListener('click', render.randomizeSnowFlake);
+ctrl.newSnowflakeButton.addEventListener('click', newSnowFlake);
+ctrl.randomizeButton.addEventListener('click', randomizeSnowFlake);
+ctrl.importSnowflakeParamsButton.addEventListener('click', importSnowflakeParams);
 
-ctrl.fgColorPicker.on('input:end' /*'color:change'*/, function(color) {
-  const {r, g, b} = color.rgb;
-  render.changeFgColor(r, g, b);
-  //console.log(color.hexString);
+ctrl.fgColorPicker.on('input:end', function(color) {
+  render.cancelHandler();
+  refreshSnowflake();
 });
 
 ctrl.bgColorPicker.on('input:end', function(color) {
-  const {r, g, b} = color.rgb;
-  render.changeBgColor(r, g, b);
+  render.cancelHandler();
+  refreshSnowflake();
 });
-
 
 const onBgFreezeLevelSlide = (position, value) => {
   render.cancelHandler();
@@ -25,7 +48,7 @@ const onBgFreezeLevelSlide = (position, value) => {
 
 const onBgFreezeLevelSlideEnd = (position, value) => {
   onBgFreezeLevelSlide(position, value);
-  render.rerenderSnowflake(); 
+  refreshSnowflake();
 }
 
 const onFgFreezeSpeedSlide = (position, value) => {
@@ -35,7 +58,7 @@ const onFgFreezeSpeedSlide = (position, value) => {
 
 const onFgFreezeSpeedSlideEnd = (position, value) => {
   onFgFreezeSpeedSlide(position, value);
-  render.rerenderSnowflake(); 
+  refreshSnowflake();
 }
 
 const onRndBgNoiseSlide = (position, value) => {
@@ -45,7 +68,7 @@ const onRndBgNoiseSlide = (position, value) => {
 
 const onRndBgNoiseSlideEnd = (position, value) => {
   onRndBgNoiseSlide(position, value);
-  render.rerenderSnowflake(); 
+  refreshSnowflake();
 }
 
 const onRndSeedSlide = (position, value) => {
@@ -55,7 +78,7 @@ const onRndSeedSlide = (position, value) => {
 
 const onRndSeedSlideEnd = (position, value) => {
   onRndSeedSlide(position, value);
-  render.rerenderSnowflake(); 
+  refreshSnowflake();
 }
 
 const onDiffusionSpeedSlide = (position, value) => {
@@ -65,7 +88,7 @@ const onDiffusionSpeedSlide = (position, value) => {
 
 const onDiffusionSpeedSlideEnd = (position, value) => {
   onDiffusionSpeedSlide(position, value);
-  render.rerenderSnowflake(); 
+  refreshSnowflake();
 }
 
 const onDiffusionAsymmetrySlide = (position, value) => {
@@ -75,7 +98,7 @@ const onDiffusionAsymmetrySlide = (position, value) => {
 
 const onDiffusionAsymmetrySlideEnd = (position, value) => {
   onDiffusionAsymmetrySlide(position, value);
-  render.rerenderSnowflake(); 
+  refreshSnowflake();
 }
 
 ctrl.updateControls(render.model);
@@ -93,6 +116,8 @@ ctrl.initSlider(ctrl.rndBgNoiseSlider, onRndBgNoiseSlide, onRndBgNoiseSlideEnd, 
 ctrl.initSlider(ctrl.rndSeedSlider, onRndSeedSlide, onRndSeedSlideEnd, 1, 1000000, 1, 0.0);
 
 ctrl.updateControls(render.model); // update again, now with sliders initialized
+ctrl.updateSnowflakeParamStr(render.model);
+
 
 render.initializeSnowFlake();
 
